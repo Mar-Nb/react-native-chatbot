@@ -120,9 +120,9 @@ export default function App() {
 						<FlatList
 							data={[
 								{ key: 'Développée par', link: 'https://github.com/Mar-Nb', textLink: '@Mar-Nb' },
-								{ key: 'Description : Une application permettant de communiquer avec une instance GPT-3 directement depuis son téléphone. Un petit projet au concept pour découvrir React Native.' },
+								{ key: 'Description : Une application permettant de communiquer avec une instance GPT-3 directement depuis son téléphone. Un petit projet au concept simple pour découvrir React Native.' },
 								{ key: 'Version : 1.0' },
-								{ key: 'Github : À venir' }
+								{ key: 'Github :', link: 'https://github.com/Mar-Nb/react-native-chatbot', textLink: 'React Native ChatBot' }
 							]}
 							renderItem={renderModal}/>
 					</View>
