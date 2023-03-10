@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, FlatList, TextInput, StatusBar, Image, Pressable, Modal, Linking } from 'react-native';
 import { OPENAI_API_KEY } from '@env';
 import 'react-native-url-polyfill/auto';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 
 export default function App() {
@@ -14,6 +15,9 @@ export default function App() {
 	
 	// Gestion de l'apparition du modal
 	const [modalVisible, setModalVisible] = useState(false);
+	
+	// Gestion de l'apparition du spinner
+	const [spinnerVisible, setSpinnerVisible] = useState(false);
 	
 	// Communication avec l'API d'OpenAPI
 	const { Configuration, OpenAIApi } = require("openai");
@@ -39,12 +43,15 @@ export default function App() {
 	// Réception de la réponse du bot
 	const handleResponse = async () => {
 		try {
+			setSpinnerVisible(true);
+			
 			const completion = await openai.createCompletion({
 				model: "text-davinci-003",
 				prompt: prompt,
 				max_tokens: 300
 			});
 
+			setSpinnerVisible(false);
 			setMessages(previousMessages => ([
 				...previousMessages,
 				{ id: previousMessages.length + 1, text: completion.data.choices[0].text.trim(), sender: "bot" }]));			
@@ -87,6 +94,15 @@ export default function App() {
 
   return (
     <View style={styles.container}>
+    
+    	<Spinner
+    		visible={spinnerVisible}
+    		textContent={'Préparation de la réponse...'}
+    		textStyle={{ color: '#00FF41' }}
+    		color="#00FF41"
+    		overlayColor="rgba(0, 0, 0, 0.65)"/>
+    	
+    	
     	<View style={styles.topBar}>
     		<View>    		
 	    		<Text style={styles.itemTopBar}>My ChatBot v.1.0</Text>
@@ -104,6 +120,8 @@ export default function App() {
     		visible={modalVisible}
     		onRequestClose={() => { setModalVisible(!modalVisible); }}>
     		
+		  	<View style={styles.modalOverlay}></View>
+		  	
     		<View style={styles.modalContainer}>
 			  	<View style={styles.modalTopBar}>
 						<View>    		
@@ -279,6 +297,9 @@ const styles = StyleSheet.create({
   	alignSelf: 'center',
   	alignItems: 'center',
   	justifyContent: 'center',
+  	position: 'absolute',
+  	top: '30%',
+  	zIndex: 999
   },
   modalTextContainer: {
   	backgroundColor: '#0D0208',
@@ -290,5 +311,12 @@ const styles = StyleSheet.create({
   	borderTopRightRadius: 2,
   	borderTopWidth: 0,
   	padding: 10
+  },
+  modalOverlay: {
+		width: '100%',
+		height: '100%',
+		backgroundColor: 'rgba(0, 0, 0, 0.8)',
+		position: 'relative',
+		zIndex: 5
   }
 });
