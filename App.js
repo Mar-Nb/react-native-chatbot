@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, FlatList, TextInput, StatusBar, Image, Pressable, Modal, Linking } from 'react-native';
 import { OPENAI_API_KEY } from '@env';
 import 'react-native-url-polyfill/auto';
@@ -23,11 +23,12 @@ export default function App() {
 	const { Configuration, OpenAIApi } = require("openai");
 
 	const configuration = new Configuration({
-		apiKey: OPENAI_API_KEY,
+		apiKey: OPENAI_API_KEY || process.env.OPENAI_API_KEY,
 	});
 	
 	const openai = new OpenAIApi(configuration);
 	
+	const refFlatList = useRef(null);
 	let prompt;
 
 	const handleSend = () => {
@@ -37,6 +38,8 @@ export default function App() {
 			
 			// Manipulation pour pouvoir envoyer les messages "un à un"
 			setMessages(previousMessages => ([...previousMessages, { id: previousMessages.length + 1, text: prompt, sender: "user" }]));
+			
+			requestAnimationFrame( () => refFlatList.current.scrollToEnd({ animated: true }) );
 		}
 	};
 	
@@ -54,7 +57,9 @@ export default function App() {
 			setSpinnerVisible(false);
 			setMessages(previousMessages => ([
 				...previousMessages,
-				{ id: previousMessages.length + 1, text: completion.data.choices[0].text.trim(), sender: "bot" }]));			
+				{ id: previousMessages.length + 1, text: completion.data.choices[0].text.trim(), sender: "bot" }]));
+				
+			requestAnimationFrame( () => refFlatList.current.scrollToEnd({ animated: true }) );
 		}
 		catch (error) {
 			if (error.response) { console.error(`Statut : ${error.response.status}\ninfos : ${error.response.data}`); }
@@ -147,7 +152,12 @@ export default function App() {
 		  	</View>
     	</Modal>
     
-    	<FlatList style={styles.list} data={messages} renderItem={renderItem} keyExtractor={(item) => item.id.toString()}/>
+    	<FlatList
+    		style={styles.list}
+				data={messages}
+				renderItem={renderItem}
+				keyExtractor={(item) => item.id.toString()}
+				ref={refFlatList}/>
     	
     	<View style={styles.inputContainer}>
     		<TextInput
@@ -177,7 +187,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#202020',
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: StatusBar.currentHeight || 0
   },
   botMessageContainer: {
   	width: '65%',

@@ -21,13 +21,19 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#333"
-      }
+      },
+      "package": "com.marnb.djaxchatbot"
     },
     "androidStatusBar": {
-    	"backgroundColor": "#0D0208"
+      "backgroundColor": "#0D0208"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "1c5f3669-0663-437b-88bd-1f70d1e21d24"
+      }
     }
   }
 }
