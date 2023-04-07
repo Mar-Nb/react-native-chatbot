@@ -1,4 +1,4 @@
-![Logo](assets/icon.png)
+![Logo](assets/icon.png 100x100)
 
 # My Chatbot
 
@@ -29,5 +29,5 @@ Pour l'heure, le projet en est à sa version 1.0, qui consiste simplement à com
 
 ## Démo
 
-![GIF montrant un exemple d'utilisation de l'appli](assets/demo.gif)
+<img src="assets/demo.gif" width="100"/>
 
